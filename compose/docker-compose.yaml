@@ -6,16 +6,17 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: naresh
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - datastore
+
   be-app:
     container_name: be-app
     build:
-      context:  ../backend
+      context: ../backend
       dockerfile: Dockerfile
       args:
         TAG: compose-v1
@@ -30,7 +31,8 @@ services:
         condition: service_healthy
     networks:
       - datastore
-    fe-app:
+
+  fe-app:
     container_name: fe-app
     build:
       context: ../frontend
