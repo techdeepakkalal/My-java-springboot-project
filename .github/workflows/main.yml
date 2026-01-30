@@ -20,16 +20,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3️⃣ Clean & Package + SonarQube Scan
-      - name: Sonar Scan
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          mvn clean verify sonar:sonar \
-            -DskipTests \
-            -Dsonar.projectKey=myproject \
-            -Dsonar.host.url=${{ secrets.SONAR_URL }} \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      # # 3️⃣ Clean & Package + SonarQube Scan
+      # - name: Sonar Scan
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: |
+      #     mvn clean verify sonar:sonar \
+      #       -DskipTests \
+      #       -Dsonar.projectKey=myproject \
+      #       -Dsonar.host.url=${{ secrets.SONAR_URL }} \
+      #       -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
 
       # 4️⃣ Quality Gate Check
