@@ -1,0 +1,52 @@
+name: Deploy Backend + Frontend Docker Containers
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Deploy on EC2 using SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+
+          script: |
+            echo "🚀 Connected to EC2"
+
+            cd My-java-springboot-project || git clone https://github.com/techdeepakkalal/My-java-springboot-project.git
+
+            cd My-java-springboot-project
+
+            echo "🛑 Stopping Old Containers"
+            docker stop backend || true
+            docker rm backend || true
+            docker stop frontend || true
+            docker rm frontend || true
+
+            echo "🐳 Building Backend Image"
+            cd backend
+            docker build -t spring-backend:latest .
+            cd ..
+
+            echo "🐳 Building Frontend Image"
+            cd frontend
+            docker build -t streamlit-frontend:latest .
+            cd ..
+
+            echo "▶ Running Backend Container"
+            docker run -d --name backend -p 8084:8084 spring-backend:latest
+
+            echo "▶ Running Frontend Container"
+            docker run -d --name frontend -p 8501:8501 streamlit-frontend:latest
+
+            echo "🎉 Deployment Completed Successfully!"
