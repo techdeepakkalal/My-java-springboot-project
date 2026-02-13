@@ -5,6 +5,8 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -23,30 +25,29 @@ jobs:
           script: |
             echo "🚀 Connected to EC2"
 
-            cd My-java-springboot-project || git clone https://github.com/techdeepakkalal/My-java-springboot-project.git
+            cd ~/My-java-springboot-project || git clone https://github.com/techdeepakkalal/My-java-springboot-project.git
+            cd ~/My-java-springboot-project
 
-            cd My-java-springboot-project
-
-            echo "🛑 Stopping Old Containers"
+            echo "🛑 Stop Old Containers"
             docker stop backend || true
             docker rm backend || true
             docker stop frontend || true
             docker rm frontend || true
 
-            echo "🐳 Building Backend Image"
+            echo "🐳 Build Backend"
             cd backend
-            docker build -t spring-backend:latest .
+            docker build -t spring-backend .
             cd ..
 
-            echo "🐳 Building Frontend Image"
+            echo "🐳 Build Frontend"
             cd frontend
-            docker build -t streamlit-frontend:latest .
+            docker build -t streamlit-frontend .
             cd ..
 
-            echo "▶ Running Backend Container"
-            docker run -d --name backend -p 8084:8084 spring-backend:latest
+            echo "▶ Run Backend"
+            docker run -d --name backend -p 8084:8084 spring-backend
 
-            echo "▶ Running Frontend Container"
-            docker run -d --name frontend -p 8501:8501 streamlit-frontend:latest
+            echo "▶ Run Frontend"
+            docker run -d --name frontend -p 8501:8501 streamlit-frontend
 
-            echo "🎉 Deployment Completed Successfully!"
+            echo "🎉 Deployment Done!"
